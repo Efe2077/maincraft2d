@@ -104,17 +104,31 @@ class Level:
             y = int(player.rect.x / tile_size)
             x = player.rect.y // tile_size
             if keystate[pygame.K_e]:
-                if x < 10 and y + 1 < len(self.level_data[x]) and self.level_data[x + 1][y + 1] != 'P':
+                if y + 1 < len(self.level_data[x]) and self.level_data[x + 1][y + 1] != 'P':
+                    self.delete_block(x + 1, y + 1)
                     self.level_data[x + 1] = self.level_data[x + 1][: y + 1] + ' ' + self.level_data[x + 1][y + 2:]
-                    tile = Tile(((y + 1) * tile_size, (x + 1) * tile_size), texture=False, vision=False)
-                    self.tiles.add(tile)
 
             elif keystate[pygame.K_q]:
-                if x < 10 and y - 1 > 0 and self.level_data[x+1][y-1] != 'P':
+                if y - 1 > 0 and self.level_data[x+1][y-1] != 'P':
+                    self.delete_block(x + 1, y - 1)
                     self.level_data[x + 1] = self.level_data[x + 1][: y - 1] + ' ' + self.level_data[x + 1][y:]
-                    tile = Tile(((y - 1) * tile_size, (x + 1) * tile_size), texture=False, vision=False)
-                    self.tiles.add(tile)
-            self.tiles.draw(self.display_surface)
+
+    def delete_block(self, x, y):
+        flag = False
+        for row_index, row in enumerate(self.level_data):
+            for col_index, cell in enumerate(row):
+                if row_index == y and col_index == x:
+                    print(col_index, row_index)
+                    if self.level_data[col_index][row_index] == 'X':
+                        print('kill')
+                        flag = True
+        if flag:
+            for sprite in self.tiles.sprites():
+                del_y = int(sprite.rect.x / tile_size)
+                del_x = sprite.rect.y // tile_size
+                if flag:
+                    if x == del_x and y == del_y:
+                        sprite.kill()
 
     def run(self):
         self.tiles.update(self.world_shift)
