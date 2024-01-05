@@ -115,12 +115,11 @@ class Level:
 
     def delete_block(self, x, y):
         flag = False
+        print(x, y, ' <- here')
         for row_index, row in enumerate(self.level_data):
             for col_index, cell in enumerate(row):
-                if row_index == y and col_index == x:
-                    print(col_index, row_index)
-                    if self.level_data[col_index][row_index] == 'X':
-                        print('kill')
+                if col_index == y and row_index == x:
+                    if self.level_data[row_index][col_index] == 'X':
                         flag = True
         if flag:
             for sprite in self.tiles.sprites():
