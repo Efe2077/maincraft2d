@@ -1,5 +1,6 @@
 import pygame
 from support import import_folder
+from settings import tile_size
 
 
 class Player(pygame.sprite.Sprite):
@@ -11,6 +12,7 @@ class Player(pygame.sprite.Sprite):
         self.image = self.animations['idle'][self.frame_index]
         self.rect = self.image.get_rect(topleft=pos)
         self.direction = pygame.math.Vector2(0, 0)
+        self.tile_size = tile_size
         self.speed = 5
         self.gravity = 0.8
         self.jump = True

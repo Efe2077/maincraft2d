@@ -36,18 +36,19 @@ class Level:
         player.rect.x += player.direction.x * player.speed
 
         for sprite in self.tiles.sprites():
-            if sprite.rect.colliderect(player.rect):
-                if player.direction.x < 0:
-                    player.rect.left = sprite.rect.right
-                elif player.direction.x > 0:
-                    player.rect.right = sprite.rect.left
+            if sprite.show_image():
+                if sprite.rect.colliderect(player.rect):
+                    if player.direction.x < 0:
+                        player.rect.left = sprite.rect.right
+                    elif player.direction.x > 0:
+                        player.rect.right = sprite.rect.left
 
     def vertical_collision(self):
         player = self.players.sprite
         player.gravitation()
 
         for sprite in self.tiles.sprites():
-            if sprite.show_image() == 'data/grass_tex2.jpg':
+            if sprite.show_image():
                 if sprite.rect.colliderect(player.rect):
                     if player.direction.y > 0:
                         player.rect.bottom = sprite.rect.top
@@ -55,16 +56,13 @@ class Level:
                     elif player.direction.y < 0:
                         player.rect.top = sprite.rect.bottom
                         player.direction.y = 0
-            else:
-                if sprite.rect.colliderect(player.rect):
-                    print('l')
 
     def check_player(self):
         player = self.players.sprite
         keystate = pygame.key.get_pressed()
         if player.rect.y >= 660:
             self.setup_level(self.level_data)
-        elif keystate[pygame.K_e]:
+        elif keystate[pygame.K_e] and not self.flag:
             y = int(player.rect.x / tile_size)
             if player.rect.x % tile_size >= 30:
                 y += 1
@@ -75,7 +73,7 @@ class Level:
                     self.level_data[x + 1] = self.level_data[x + 1][: y + 1] + 'X' + self.level_data[x + 1][y + 2:]
                     tile = Tile(((y + 1) * tile_size, (x + 1) * tile_size))
                     self.tiles.add(tile)
-        elif keystate[pygame.K_q]:
+        elif keystate[pygame.K_q] and not self.flag:
             y = int(player.rect.x / tile_size)
             x = player.rect.y // tile_size
             if x < 10 and y - 1 > 0 and self.level_data[x + 1][y - 1] != 'P' and self.level_data[x + 1][y - 1] != 'X':
@@ -99,25 +97,24 @@ class Level:
         except Exception:
             return False
 
-    # def destroy(self):
-    #     if self.flag:
-    #         keystate = pygame.key.get_pressed()
-    #         player = self.players.sprite
-    #         if keystate[pygame.K_e]:
-    #             y = int(player.rect.x / tile_size)
-    #             x = player.rect.y // tile_size
-    #             if x < 10 and y + 1 < len(self.level_data[x]) and self.level_data[x + 1][y + 1] != 'P':
-    #                 self.level_data[x + 1] = self.level_data[x + 1][: y + 1] + ' ' + self.level_data[x + 1][y + 2:]
-    #                 tile = Tile(((y + 1) * tile_size, (x + 1) * tile_size), texture='data/banan2.jpg')
-    #                 self.tiles.add(tile)
-    #
-    #         elif keystate[pygame.K_q]:
-    #             y = int(player.rect.x / tile_size)
-    #             x = player.rect.y // tile_size
-    #             if x < 10 and y - 1 > 0 and self.level_data[x+1][y-1] != 'P':
-    #                 self.level_data[x + 1] = self.level_data[x + 1][: y - 1] + ' ' + self.level_data[x + 1][y:]
-    #                 tile = Tile(((y - 1) * tile_size, (x + 1) * tile_size), texture='data/banan2.jpg')
-    #                 self.tiles.add(tile)
+    def destroy(self):
+        if self.flag:
+            keystate = pygame.key.get_pressed()
+            player = self.players.sprite
+            y = int(player.rect.x / tile_size)
+            x = player.rect.y // tile_size
+            if keystate[pygame.K_e]:
+                if x < 10 and y + 1 < len(self.level_data[x]) and self.level_data[x + 1][y + 1] != 'P':
+                    self.level_data[x + 1] = self.level_data[x + 1][: y + 1] + ' ' + self.level_data[x + 1][y + 2:]
+                    tile = Tile(((y + 1) * tile_size, (x + 1) * tile_size), texture=False, vision=False)
+                    self.tiles.add(tile)
+
+            elif keystate[pygame.K_q]:
+                if x < 10 and y - 1 > 0 and self.level_data[x+1][y-1] != 'P':
+                    self.level_data[x + 1] = self.level_data[x + 1][: y - 1] + ' ' + self.level_data[x + 1][y:]
+                    tile = Tile(((y - 1) * tile_size, (x + 1) * tile_size), texture=False, vision=False)
+                    self.tiles.add(tile)
+            self.tiles.draw(self.display_surface)
 
     def run(self):
         self.tiles.update(self.world_shift)
@@ -130,3 +127,4 @@ class Level:
         self.vertical_collision()
         self.players.draw(self.display_surface)
         self.check_player()
+        self.destroy()

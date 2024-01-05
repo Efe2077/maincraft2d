@@ -9,6 +9,7 @@ def play_game():
     screen = pygame.display.set_mode((weight, height))
     clock = pygame.time.Clock()
     fps = 60
+    count = 0
     level = Level(level_map, screen, fps)
     running = True
 
@@ -18,7 +19,10 @@ def play_game():
                 running = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_g:
-                    level = Level(level_map, screen, fps)
+                    if count % 2 == 0:
+                        level.flag = True
+                    else:
+                        level.flag = False
         screen.fill('black')
         level.run()
         if level.stop_play_maincraft:
