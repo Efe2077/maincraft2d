@@ -1,6 +1,5 @@
 import pygame
-from head import play_game
-from Wires import wires
+from play_maincraft import play_game
 
 
 pygame.init()
