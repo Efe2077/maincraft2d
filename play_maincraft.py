@@ -23,6 +23,7 @@ def play_game():
                         level.flag = True
                     else:
                         level.flag = False
+                    count += 1
         screen.fill('black')
         level.run()
         if level.stop_play_maincraft:
