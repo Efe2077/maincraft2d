@@ -1,6 +1,6 @@
 import pygame
 from tile import Tile
-from settings import tile_size, weight
+from settings import tile_size
 from player import Player
 
 
@@ -9,9 +9,12 @@ class Level:
         self.display_surface = surface
         self.level_data = level_data
         self.setup_level(self.level_data)
+        self.k_wood = False
+        self.text = ['X', 'W']
+        self.texture = 'data/grass_tex2.jpg'
         self.world_shift = 0
         self.fps = fps
-        self.flag = False
+        self.k_del = False
         self.count_e = 5 * fps
         self.count_q = 5
         self.stop_play_maincraft = False
@@ -25,7 +28,10 @@ class Level:
                 x = col_index * tile_size
                 y = row_index * tile_size
                 if cell == 'X':
-                    tile = Tile((x, y))
+                    tile = Tile((x, y), 'data/grass_tex2.jpg')
+                    self.tiles.add(tile)
+                if cell == 'W':
+                    tile = Tile((x, y), 'data/wood.png')
                     self.tiles.add(tile)
                 elif cell == 'P':
                     player = Player((x, y))
@@ -60,37 +66,46 @@ class Level:
     def check_player(self):
         player = self.players.sprite
         keystate = pygame.key.get_pressed()
+
+        if self.k_wood:
+            self.texture = 'data/wood.png'
+            symbol = 'W'
+        else:
+            self.texture = 'data/grass_tex2.jpg'
+            symbol = 'X'
         if player.rect.y >= 660:
             self.setup_level(self.level_data)
-        elif keystate[pygame.K_e] and not self.flag:
+        elif keystate[pygame.K_e] and not self.k_del:
             y = int(player.rect.x / tile_size)
             if player.rect.x % tile_size >= 30:
                 y += 1
             x = player.rect.y // tile_size
             if (x < 10 and y + 1 < len(self.level_data[x]) and self.level_data[x + 1][y + 1] != 'P' and
-                    self.level_data[x + 1][y + 1] != 'X'):
+                    self.level_data[x + 1][y + 1] not in self.text):
                 if self.check_build(x + 1, y + 1):
-                    self.level_data[x + 1] = self.level_data[x + 1][: y + 1] + 'X' + self.level_data[x + 1][y + 2:]
-                    tile = Tile(((y + 1) * tile_size, (x + 1) * tile_size))
+                    self.level_data[x + 1] = self.level_data[x + 1][: y + 1] + symbol + self.level_data[x + 1][y + 2:]
+                    tile = Tile(((y + 1) * tile_size, (x + 1) * tile_size), self.texture)
                     self.tiles.add(tile)
-        elif keystate[pygame.K_q] and not self.flag:
+        elif keystate[pygame.K_q] and not self.k_del:
             y = int(player.rect.x / tile_size)
             x = player.rect.y // tile_size
-            if x < 10 and y - 1 > 0 and self.level_data[x + 1][y - 1] != 'P' and self.level_data[x + 1][y - 1] != 'X':
+            if (x < 10 and y - 1 > 0 and self.level_data[x + 1][y - 1] != 'P' and
+                    self.level_data[x + 1][y - 1] not in self.text):
                 if self.check_build(x + 1, y - 1):
-                    self.level_data[x + 1] = self.level_data[x + 1][: y - 1] + 'X' + self.level_data[x + 1][y:]
-                    tile = Tile(((y - 1) * tile_size, (x + 1) * tile_size))
+                    self.level_data[x + 1] = self.level_data[x + 1][: y - 1] + symbol + self.level_data[x + 1][y:]
+                    tile = Tile(((y - 1) * tile_size, (x + 1) * tile_size), self.texture)
                     self.tiles.add(tile)
         elif keystate[pygame.K_r]:
             self.setup_level(self.level_data)
 
     def check_build(self, x, y):
+        text = self.text
         try:
-            if (self.level_data[x - 1][y - 1] == 'X' or self.level_data[x - 1][y] == 'X' or
-                    self.level_data[x - 1][y + 1] == 'X' or
-                    self.level_data[x][y - 1] == 'X' or self.level_data[x][y + 1] == 'X' or
-                    self.level_data[x + 1][y - 1] == 'X' or self.level_data[x + 1][y] == 'X' or
-                    self.level_data[x + 1][y + 1] == 'X'):
+            if (self.level_data[x - 1][y - 1] in text or self.level_data[x - 1][y] in text or
+                    self.level_data[x - 1][y + 1] in text or
+                    self.level_data[x][y - 1] in text or self.level_data[x][y + 1] in text or
+                    self.level_data[x + 1][y - 1] in text or self.level_data[x + 1][y] in text or
+                    self.level_data[x + 1][y + 1] in text):
                 return True
             else:
                 return False
@@ -98,7 +113,10 @@ class Level:
             return False
 
     def destroy(self):
-        if self.flag:
+        if self.k_del:
+            f2 = pygame.font.SysFont('serif', 20)
+            text2 = f2.render("Удалить", False, (0, 255, 0))
+            self.display_surface.blit(text2, (10, 0))
             keystate = pygame.key.get_pressed()
             player = self.players.sprite
             y = int(player.rect.x / tile_size)
@@ -115,11 +133,11 @@ class Level:
 
     def delete_block(self, x, y):
         flag = False
-        print(x, y, ' <- here')
+        text = self.text
         for row_index, row in enumerate(self.level_data):
             for col_index, cell in enumerate(row):
                 if col_index == y and row_index == x:
-                    if self.level_data[row_index][col_index] == 'X':
+                    if self.level_data[row_index][col_index] in text:
                         flag = True
         if flag:
             for sprite in self.tiles.sprites():
@@ -130,10 +148,7 @@ class Level:
                         sprite.kill()
 
     def run(self):
-        self.tiles.update(self.world_shift)
         self.tiles.draw(self.display_surface)
-        self.finish.draw(self.display_surface)
-        self.finish.update(self.world_shift)
 
         self.players.update()
         self.horizontal_collision()

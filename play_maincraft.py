@@ -4,12 +4,12 @@ from create_level import Level
 
 
 def play_game():
-    #wires()
     pygame.init()
     screen = pygame.display.set_mode((weight, height))
     clock = pygame.time.Clock()
     fps = 60
-    count = 0
+    count_for_del = 0
+    count_for_texture = 0
     level = Level(level_map, screen, fps)
     running = True
 
@@ -19,16 +19,23 @@ def play_game():
                 running = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_g:
-                    if count % 2 == 0:
-                        level.flag = True
+                    if count_for_del % 2 == 0:
+                        level.k_del = True
                     else:
-                        level.flag = False
-                    count += 1
-        screen.fill('black')
+                        level.k_del = False
+                    count_for_del += 1
+                if event.key == pygame.K_1:
+                    if count_for_texture % 2 == 0:
+                        level.k_wood = True
+                    else:
+                        level.k_wood = False
+                    count_for_texture += 1
+        screen.fill('white')
         level.run()
         if level.stop_play_maincraft:
             running = False
         pygame.display.update()
         clock.tick(fps)
+
 
 play_game()
