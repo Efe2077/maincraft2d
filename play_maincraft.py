@@ -9,7 +9,9 @@ def play_game():
     clock = pygame.time.Clock()
     fps = 60
     count_for_del = 0
-    count_for_texture = 0
+    count_for_wood = 0
+    count_for_leafes = 0
+    count_for_grass = 0
     level = Level(level_map, screen, fps)
     running = True
 
@@ -24,12 +26,16 @@ def play_game():
                     else:
                         level.k_del = False
                     count_for_del += 1
-                if event.key == pygame.K_1:
-                    if count_for_texture % 2 == 0:
-                        level.k_wood = True
-                    else:
-                        level.k_wood = False
-                    count_for_texture += 1
+                elif event.key == pygame.K_1:
+                    level.texture = level.blocks['X']
+                elif event.key == pygame.K_2:
+                    level.texture = level.blocks['W']
+                elif event.key == pygame.K_3:
+                    level.texture = level.blocks['L']
+                elif event.key == pygame.K_4:
+                    level.texture = level.blocks['B']
+                elif event.key == pygame.K_5:
+                    level.texture = level.blocks['S']
         screen.fill('white')
         level.run()
         if level.stop_play_maincraft:

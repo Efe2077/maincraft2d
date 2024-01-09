@@ -10,6 +10,11 @@ level_map = [
     '     XXX      XXXX            ',
     '                              ',
     '                              '
+    '                              ',
+    '                              ',
+    '                              ',
+    '                              ',
+    '                              '
 ]
 
 tile_size = 40

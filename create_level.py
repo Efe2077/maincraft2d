@@ -8,16 +8,55 @@ class Level:
     def __init__(self, level_data, surface, fps):
         self.display_surface = surface
         self.level_data = level_data
+        self.blocks = {'X': 'data/grass_tex2.jpg', 'W': 'data/wood.png', 'L': 'data/liafes.png',
+                       'B': 'data/obsidian.png', 'S': 'data/stone.png'}
+        self.texture = self.blocks['X']
         self.setup_level(self.level_data)
-        self.k_wood = False
-        self.text = ['X', 'W']
-        self.texture = 'data/grass_tex2.jpg'
+        self.text = ['X', 'W', 'L', 'B', 'S']
         self.world_shift = 0
         self.fps = fps
         self.k_del = False
         self.count_e = 5 * fps
         self.count_q = 5
         self.stop_play_maincraft = False
+
+    def draw_line_of_chose(self):
+        pygame.draw.rect(self.display_surface, (pygame.Color('black')), (30, 30, 120, 30), 2)
+        if self.texture == self.blocks['X']:
+            pygame.draw.rect(self.display_surface, (pygame.Color('red')), (30, 30, 30, 30), 3)
+        else:
+            pygame.draw.rect(self.display_surface, (pygame.Color('black')), (30, 30, 30, 30), 2)
+        if self.texture == self.blocks['W']:
+            pygame.draw.rect(self.display_surface, (pygame.Color('red')), (57, 30, 30, 30), 3)
+        else:
+            pygame.draw.rect(self.display_surface, (pygame.Color('black')), (30, 30, 60, 30), 2)
+        if self.texture == self.blocks['L']:
+            pygame.draw.rect(self.display_surface, (pygame.Color('red')), (87, 30, 30, 30), 3)
+        else:
+            pygame.draw.rect(self.display_surface, (pygame.Color('black')), (30, 30, 90, 30), 2)
+        if self.texture == self.blocks['B']:
+            pygame.draw.rect(self.display_surface, (pygame.Color('red')), (117, 30, 30, 30), 3)
+        else:
+            pygame.draw.rect(self.display_surface, (pygame.Color('black')), (30, 30, 120, 30), 2)
+        if self.texture == self.blocks['S']:
+            pygame.draw.rect(self.display_surface, (pygame.Color('red')), (147, 30, 30, 30), 3)
+        else:
+            pygame.draw.rect(self.display_surface, (pygame.Color('black')), (30, 30, 150, 30), 2)
+        image = pygame.image.load('data/grass_icon.png')
+        rect = image.get_rect(topleft=(35, 35))
+        self.display_surface.blit(image, rect)
+        image = pygame.image.load('data/wood_icon.png')
+        rect = image.get_rect(topleft=(62, 35))
+        self.display_surface.blit(image, rect)
+        image = pygame.image.load('data/leaf_icon.png')
+        rect = image.get_rect(topleft=(92, 35))
+        self.display_surface.blit(image, rect)
+        image = pygame.image.load('data/obsidian_icon.png')
+        rect = image.get_rect(topleft=(122, 35))
+        self.display_surface.blit(image, rect)
+        image = pygame.image.load('data/stone_icon.png')
+        rect = image.get_rect(topleft=(152, 35))
+        self.display_surface.blit(image, rect)
 
     def setup_level(self, layout):
         self.tiles = pygame.sprite.Group()
@@ -27,11 +66,10 @@ class Level:
             for col_index, cell in enumerate(row):
                 x = col_index * tile_size
                 y = row_index * tile_size
-                if cell == 'X':
-                    tile = Tile((x, y), 'data/grass_tex2.jpg')
-                    self.tiles.add(tile)
-                if cell == 'W':
-                    tile = Tile((x, y), 'data/wood.png')
+                x_cor = col_index
+                y_cor = row_index
+                if cell != ' ' and cell != 'P':
+                    tile = Tile((x, y), self.blocks[self.level_data[y_cor][x_cor]])
                     self.tiles.add(tile)
                 elif cell == 'P':
                     player = Player((x, y))
@@ -67,12 +105,14 @@ class Level:
         player = self.players.sprite
         keystate = pygame.key.get_pressed()
 
-        if self.k_wood:
-            self.texture = 'data/wood.png'
-            symbol = 'W'
-        else:
-            self.texture = 'data/grass_tex2.jpg'
+        if self.texture == self.blocks['X']:
             symbol = 'X'
+        elif self.texture == self.blocks['W']:
+            symbol = 'W'
+        elif self.texture == self.blocks['B']:
+            symbol = 'B'
+        else:
+            symbol = 'L'
         if player.rect.y >= 660:
             self.setup_level(self.level_data)
         elif keystate[pygame.K_e] and not self.k_del:
@@ -153,6 +193,7 @@ class Level:
         self.players.update()
         self.horizontal_collision()
         self.vertical_collision()
+        self.draw_line_of_chose()
         self.players.draw(self.display_surface)
         self.check_player()
         self.destroy()
