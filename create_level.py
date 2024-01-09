@@ -37,11 +37,11 @@ class Level:
         if self.texture == self.blocks['B']:
             pygame.draw.rect(self.display_surface, (pygame.Color('red')), (117, 30, 30, 30), 3)
         else:
-            pygame.draw.rect(self.display_surface, (pygame.Color('black')), (30, 30, 120, 30), 2)
+            pygame.draw.rect(self.display_surface, (pygame.Color('black')), (30, 30, 117, 30), 2)
         if self.texture == self.blocks['S']:
             pygame.draw.rect(self.display_surface, (pygame.Color('red')), (147, 30, 30, 30), 3)
         else:
-            pygame.draw.rect(self.display_surface, (pygame.Color('black')), (30, 30, 150, 30), 2)
+            pygame.draw.rect(self.display_surface, (pygame.Color('black')), (30, 30, 147, 30), 2)
         image = pygame.image.load('data/grass_icon.png')
         rect = image.get_rect(topleft=(35, 35))
         self.display_surface.blit(image, rect)
@@ -111,6 +111,8 @@ class Level:
             symbol = 'W'
         elif self.texture == self.blocks['B']:
             symbol = 'B'
+        elif self.texture == self.blocks['S']:
+            symbol = 'S'
         else:
             symbol = 'L'
         if player.rect.y >= 660:

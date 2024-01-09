@@ -42,6 +42,3 @@ def play_game():
             running = False
         pygame.display.update()
         clock.tick(fps)
-
-
-play_game()
