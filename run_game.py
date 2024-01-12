@@ -3,7 +3,7 @@ from play_maincraft import play_game
 
 
 pygame.init()
-weight, height = 1200, 600
+weight, height = 1200, 675
 screen = pygame.display.set_mode((weight, height))
 background_image = pygame.image.load('data/back.png')
 screen.blit(background_image, (0, 0))

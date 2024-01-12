@@ -6,6 +6,7 @@ from settings import tile_size
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos):
         super().__init__()
+        self.animations = {}
         self.character_assets()
         self.frame_index = 0
         self.animation_speed = 0.15
@@ -76,6 +77,9 @@ class Player(pygame.sprite.Sprite):
                 if self.direction.y == 0:
                     self.jumping()
                     self.jump = False
+
+        if keystate[pygame.K_w]:
+            self.direction.y = -self.gravity - 2
 
     def jumping(self):
         self.direction.y = self.jump_speed

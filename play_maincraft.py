@@ -9,9 +9,6 @@ def play_game():
     clock = pygame.time.Clock()
     fps = 60
     count_for_del = 0
-    count_for_wood = 0
-    count_for_leafes = 0
-    count_for_grass = 0
     level = Level(level_map, screen, fps)
     running = True
 

@@ -21,7 +21,6 @@ class Level:
         self.stop_play_maincraft = False
 
     def draw_line_of_chose(self):
-        pygame.draw.rect(self.display_surface, (pygame.Color('black')), (30, 30, 120, 30), 2)
         if self.texture == self.blocks['X']:
             pygame.draw.rect(self.display_surface, (pygame.Color('red')), (30, 30, 30, 30), 3)
         else:
@@ -37,11 +36,11 @@ class Level:
         if self.texture == self.blocks['B']:
             pygame.draw.rect(self.display_surface, (pygame.Color('red')), (117, 30, 30, 30), 3)
         else:
-            pygame.draw.rect(self.display_surface, (pygame.Color('black')), (30, 30, 117, 30), 2)
+            pygame.draw.rect(self.display_surface, (pygame.Color('black')), (30, 30, 120, 30), 2)
         if self.texture == self.blocks['S']:
             pygame.draw.rect(self.display_surface, (pygame.Color('red')), (147, 30, 30, 30), 3)
         else:
-            pygame.draw.rect(self.display_surface, (pygame.Color('black')), (30, 30, 147, 30), 2)
+            pygame.draw.rect(self.display_surface, (pygame.Color('black')), (30, 30, 150, 30), 2)
         image = pygame.image.load('data/grass_icon.png')
         rect = image.get_rect(topleft=(35, 35))
         self.display_surface.blit(image, rect)
@@ -115,28 +114,50 @@ class Level:
             symbol = 'S'
         else:
             symbol = 'L'
-        if player.rect.y >= 660:
+        if player.rect.y >= 660 or player.rect.y < -50:
             self.setup_level(self.level_data)
         elif keystate[pygame.K_e] and not self.k_del:
             y = int(player.rect.x / tile_size)
             if player.rect.x % tile_size >= 30:
                 y += 1
             x = player.rect.y // tile_size
-            if (x < 10 and y + 1 < len(self.level_data[x]) and self.level_data[x + 1][y + 1] != 'P' and
+            if (0 < x < 10 and y + 1 < len(self.level_data[x]) and self.level_data[x + 1][y + 1] != 'P' and
                     self.level_data[x + 1][y + 1] not in self.text):
                 if self.check_build(x + 1, y + 1):
                     self.level_data[x + 1] = self.level_data[x + 1][: y + 1] + symbol + self.level_data[x + 1][y + 2:]
                     tile = Tile(((y + 1) * tile_size, (x + 1) * tile_size), self.texture)
                     self.tiles.add(tile)
+
         elif keystate[pygame.K_q] and not self.k_del:
             y = int(player.rect.x / tile_size)
             x = player.rect.y // tile_size
-            if (x < 10 and y - 1 > 0 and self.level_data[x + 1][y - 1] != 'P' and
+            if (0 < x < 10 and 0 < y - 1 < len(self.level_data[x]) and self.level_data[x + 1][y - 1] != 'P' and
                     self.level_data[x + 1][y - 1] not in self.text):
                 if self.check_build(x + 1, y - 1):
                     self.level_data[x + 1] = self.level_data[x + 1][: y - 1] + symbol + self.level_data[x + 1][y:]
                     tile = Tile(((y - 1) * tile_size, (x + 1) * tile_size), self.texture)
                     self.tiles.add(tile)
+
+        elif keystate[pygame.K_c] and not self.k_del:
+            y = int(player.rect.x / tile_size)
+            x = player.rect.y // tile_size
+            if (0 < x - 1 < 10 and y + 1 < len(self.level_data[x]) and self.level_data[x - 1][y + 1] != 'P' and
+                    self.level_data[x - 1][y + 1] not in self.text):
+                if self.check_build(x - 1, y + 1):
+                    self.level_data[x - 1] = self.level_data[x - 1][: y + 1] + symbol + self.level_data[x - 1][y + 2:]
+                    tile = Tile(((y + 1) * tile_size, (x - 1) * tile_size), self.texture)
+                    self.tiles.add(tile)
+
+        elif keystate[pygame.K_x] and not self.k_del:
+            y = int(player.rect.x / tile_size)
+            x = player.rect.y // tile_size
+            if (0 < x - 1 < 10 and 0 < y - 1 < len(self.level_data[x]) and self.level_data[x - 1][y - 1] != 'P' and
+                    self.level_data[x - 1][y - 1] not in self.text):
+                if self.check_build(x - 1, y - 1):
+                    self.level_data[x - 1] = self.level_data[x - 1][: y - 1] + symbol + self.level_data[x - 1][y:]
+                    tile = Tile(((y - 1) * tile_size, (x - 1) * tile_size), self.texture)
+                    self.tiles.add(tile)
+
         elif keystate[pygame.K_r]:
             self.setup_level(self.level_data)
 
@@ -164,14 +185,24 @@ class Level:
             y = int(player.rect.x / tile_size)
             x = player.rect.y // tile_size
             if keystate[pygame.K_e]:
-                if y + 1 < len(self.level_data[x]) and self.level_data[x + 1][y + 1] != 'P':
+                if 0 < x < 10 and y + 1 < len(self.level_data[x]) and self.level_data[x + 1][y + 1] != 'P':
                     self.delete_block(x + 1, y + 1)
                     self.level_data[x + 1] = self.level_data[x + 1][: y + 1] + ' ' + self.level_data[x + 1][y + 2:]
 
             elif keystate[pygame.K_q]:
-                if y - 1 > 0 and self.level_data[x+1][y-1] != 'P':
+                if 0 < x < 10 and 0 < y - 1 < len(self.level_data[x]) and self.level_data[x + 1][y - 1] != 'P':
                     self.delete_block(x + 1, y - 1)
                     self.level_data[x + 1] = self.level_data[x + 1][: y - 1] + ' ' + self.level_data[x + 1][y:]
+
+            elif keystate[pygame.K_c]:
+                if 0 < x - 1 < 10 and y + 1 < len(self.level_data[x]) and self.level_data[x - 1][y + 1] != 'P':
+                    self.delete_block(x - 1, y + 1)
+                    self.level_data[x - 1] = self.level_data[x - 1][: y + 1] + ' ' + self.level_data[x - 1][y + 2:]
+
+            elif keystate[pygame.K_x]:
+                if 0 < x - 1 < 10 and 0 < y - 1 < len(self.level_data[x]) and self.level_data[x - 1][y - 1] != 'P':
+                    self.delete_block(x - 1, y - 1)
+                    self.level_data[x - 1] = self.level_data[x - 1][: y - 1] + ' ' + self.level_data[x - 1][y:]
 
     def delete_block(self, x, y):
         flag = False
