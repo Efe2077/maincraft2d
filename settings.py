@@ -1,21 +1,38 @@
-level_map = [
-    '                              ',
-    '                              ',
-    '                              ',
-    '           XX XX XX  X        ',
-    'X                      X      ',
-    'X P                 X     X   ',
-    'XXXXXXX      XXXX XX   X X X  ',
-    ' XXXX     XXXX      XX        ',
-    '     XXX      XXXX            ',
-    '                              ',
-    '                              ',
-    '                              ',
-    '                              ',
-    '                              ',
-    '                              ',
-    '                              '
-]
+# ............................
+# ............................
+# ............................
+# ..........XX.XX.XX..X.......
+# X......................X....
+# X.P.................X.....X.
+# XXXXXXX......XXXX.XX...X.X.X
+# XXXX.....XXXX......XX.......
+# XXX......XXXX...............
+# ............................
+# ............................
+# ............................
+# ............................
+# ............................
+# ............................
+# ............................
+
+
+def load_level(filename):
+    filename = "data/" + filename
+    with open(filename, 'r') as mapFile:
+        level_field = [line.strip() for line in mapFile]
+    max_width = max(map(len, level_field))
+    return list(map(lambda x: x.ljust(max_width, '.'), level_field))
+
+
+def save(file, name):
+    filename = 'data/' + name
+    with open(filename, 'w') as savefile:
+        for i in file:
+            savefile.write(i)
+            savefile.write('\n')
+
+
+level_map = load_level('map.txt')
 
 tile_size = 40
 weight, height = 1200, 660
