@@ -1,10 +1,14 @@
 import pygame
 from settings import level_map, height, weight
 from create_level import Level
+from random import choice
 
 
 def play_game():
     pygame.init()
+    pygame.mixer.music.load(f'data/musik/{choice(["Minecraft1.mp3", "Minecraft2.mp3", "Minecraft3.mp3"])}')
+    pygame.mixer.music.set_volume(0.5)
+    pygame.mixer.music.play(-1)
     screen = pygame.display.set_mode((weight, height))
     clock = pygame.time.Clock()
     fps = 60

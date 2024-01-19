@@ -2,6 +2,7 @@ import pygame
 from tile import Tile
 from settings import tile_size, save
 from player import Player
+from random import choice
 
 
 class Level:
@@ -10,6 +11,22 @@ class Level:
         self.level_data = level_data
         self.blocks = {'X': 'data/grass_tex2.jpg', 'W': 'data/wood.png', 'L': 'data/liafes.png',
                        'B': 'data/obsidian.png', 'S': 'data/stone.png'}
+
+        self.blocks_sounds = {'X': f'data/sound/grass/{choice(["grass1.mp3", "grass2.mp3"])}',
+                              'W': f'data/sound/wood/{choice(["wood1.mp3", "wood2.mp3"])}',
+                              'L': f'data/sound/leaves/leaves1.mp3',
+                              'B': f'data/sound/obsidian/{choice(["obsidian1.mp3", "obsidian2.mp3"])}',
+                              'S': f'data/sound/stone/{choice(["stone1.mp3", "stone2.mp3"])}'}
+
+        self.blocks_sounds_br = {'X': f'data/sound_break/grass/grass_break.mp3',
+                                 'W': f'data/sound_break/wood/wood_break.mp3',
+                                 'L': f'data/sound_break/leaves/leaves_break.mp3',
+                                 'B': f'data/sound_break/obsidian/stone_break.mp3',
+                                 'S': f'data/sound_break/stone/stone_break.mp3'}
+        # pygame.mixer.music.load(f'data/musik/{choice(["Minecraft1.mp3", "Minecraft2.mp3", "Minecraft3.mp3"])}')
+        # pygame.mixer.music.set_volume(0.5)
+        # pygame.mixer.music.play()
+        self.symbol = 'X'
         self.texture = self.blocks['X']
         self.setup_level(self.level_data)
         self.text = ['X', 'W', 'L', 'B', 'S']
@@ -114,6 +131,12 @@ class Level:
             symbol = 'S'
         else:
             symbol = 'L'
+
+        self.symbol = symbol
+
+        s = pygame.mixer.Sound(self.blocks_sounds[symbol])
+        s.set_volume(0.5)
+
         if player.rect.y >= 660 or player.rect.y < -50:
             self.setup_level(self.level_data)
         elif keystate[pygame.K_c] and not self.k_del:
@@ -127,6 +150,7 @@ class Level:
                     self.level_data[x + 1] = self.level_data[x + 1][: y + 1] + symbol + self.level_data[x + 1][y + 2:]
                     tile = Tile(((y + 1) * tile_size, (x + 1) * tile_size), self.texture)
                     self.tiles.add(tile)
+                    s.play()
 
         elif keystate[pygame.K_x] and not self.k_del:
             y = int(player.rect.x / tile_size)
@@ -137,6 +161,7 @@ class Level:
                     self.level_data[x + 1] = self.level_data[x + 1][: y - 1] + symbol + self.level_data[x + 1][y:]
                     tile = Tile(((y - 1) * tile_size, (x + 1) * tile_size), self.texture)
                     self.tiles.add(tile)
+                    s.play()
 
         elif keystate[pygame.K_e] and not self.k_del:
             y = int(player.rect.x / tile_size)
@@ -147,6 +172,7 @@ class Level:
                     self.level_data[x - 1] = self.level_data[x - 1][: y + 1] + symbol + self.level_data[x - 1][y + 2:]
                     tile = Tile(((y + 1) * tile_size, (x - 1) * tile_size), self.texture)
                     self.tiles.add(tile)
+                    s.play()
 
         elif keystate[pygame.K_q] and not self.k_del:
             y = int(player.rect.x / tile_size)
@@ -157,6 +183,7 @@ class Level:
                     self.level_data[x - 1] = self.level_data[x - 1][: y - 1] + symbol + self.level_data[x - 1][y:]
                     tile = Tile(((y - 1) * tile_size, (x - 1) * tile_size), self.texture)
                     self.tiles.add(tile)
+                    s.play()
 
         elif keystate[pygame.K_r]:
             self.setup_level(self.level_data)
