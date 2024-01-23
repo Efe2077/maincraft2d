@@ -23,9 +23,6 @@ class Level:
                                  'L': f'data/sound_break/leaves/leaves_break.mp3',
                                  'B': f'data/sound_break/obsidian/stone_break.mp3',
                                  'S': f'data/sound_break/stone/stone_break.mp3'}
-        # pygame.mixer.music.load(f'data/musik/{choice(["Minecraft1.mp3", "Minecraft2.mp3", "Minecraft3.mp3"])}')
-        # pygame.mixer.music.set_volume(0.5)
-        # pygame.mixer.music.play()
         self.symbol = 'X'
         self.texture = self.blocks['X']
         self.setup_level(self.level_data)

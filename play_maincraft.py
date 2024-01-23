@@ -10,10 +10,12 @@ def play_game():
     pygame.mixer.music.load(f'data/musik/{choice(["Minecraft1.mp3", "Minecraft2.mp3", "Minecraft3.mp3"])}')
     pygame.mixer.music.set_volume(0.5)
     pygame.mixer.music.play()
+
     screen = pygame.display.set_mode((weight, height))
     clock = pygame.time.Clock()
     icon = pygame.image.load('data/logo.png')
     pygame.display.set_icon(icon)
+    pygame.mouse.set_visible(True)
     fps = 60
     count_for_del = 0
     level = Level(level_map, screen, fps)
