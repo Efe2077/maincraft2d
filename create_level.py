@@ -192,8 +192,7 @@ class Level:
         text = self.text
         try:
             if (self.level_data[x - 1][y] in text or self.level_data[x][y - 1] in text or
-                    self.level_data[x][y + 1] in text or self.level_data[x + 1][y] in text or
-                    self.level_data[x + 1][y + 1] in text):
+                    self.level_data[x][y + 1] in text or self.level_data[x + 1][y] in text):
                 return True
             else:
                 return False
@@ -205,7 +204,9 @@ class Level:
             f2 = pygame.font.SysFont('serif', 20)
             text2 = f2.render("Удалить", False, (0, 255, 0))
             self.display_surface.blit(text2, (10, 0))
+
             keystate = pygame.key.get_pressed()
+
             player = self.players.sprite
             y = int(player.rect.x / tile_size)
             x = player.rect.y // tile_size
@@ -243,6 +244,9 @@ class Level:
                 del_x = sprite.rect.y // tile_size
                 if flag:
                     if x == del_x and y == del_y:
+                        s = pygame.mixer.Sound('data/chponk.mp3')
+                        s.set_volume(0.05)
+                        s.play()
                         sprite.kill()
 
     def run(self):
