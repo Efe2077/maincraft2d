@@ -39,3 +39,4 @@ level_map = load_level('map.txt')
 tile_size = 40
 weight, height = 1200, 660
 screen_height = len(level_map) * tile_size
+symbol_of_blocks = ['X', 'W', 'L', 'B', 'S']

@@ -38,15 +38,15 @@ def play_game():
                         level.k_del = False
                     count_for_del += 1
                 elif event.key == pygame.K_1:
-                    level.texture = level.blocks['X']
+                    level.texture = level.blocks[level.text[0]]
                 elif event.key == pygame.K_2:
-                    level.texture = level.blocks['W']
+                    level.texture = level.blocks[level.text[1]]
                 elif event.key == pygame.K_3:
-                    level.texture = level.blocks['L']
+                    level.texture = level.blocks[level.text[2]]
                 elif event.key == pygame.K_4:
-                    level.texture = level.blocks['B']
+                    level.texture = level.blocks[level.text[3]]
                 elif event.key == pygame.K_5:
-                    level.texture = level.blocks['S']
+                    level.texture = level.blocks[level.text[4]]
         screen.fill('white')
         level.run()
         if level.stop_play_maincraft:

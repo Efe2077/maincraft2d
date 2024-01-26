@@ -1,6 +1,6 @@
 import pygame
 from tile import Tile
-from settings import tile_size, save
+from settings import tile_size, save, symbol_of_blocks
 from player import Player
 from random import choice
 
@@ -26,7 +26,7 @@ class Level:
         self.symbol = 'X'
         self.texture = self.blocks['X']
         self.setup_level(self.level_data)
-        self.text = ['X', 'W', 'L', 'B', 'S']
+        self.text = symbol_of_blocks
         self.world_shift = 0
         self.fps = fps
         self.k_del = False
@@ -35,23 +35,23 @@ class Level:
         self.stop_play_maincraft = False
 
     def draw_line_of_chose(self):
-        if self.texture == self.blocks['X']:
+        if self.texture == self.blocks[self.text[0]]:
             pygame.draw.rect(self.display_surface, (pygame.Color('red')), (30, 30, 30, 30), 3)
         else:
             pygame.draw.rect(self.display_surface, (pygame.Color('black')), (30, 30, 30, 30), 2)
-        if self.texture == self.blocks['W']:
+        if self.texture == self.blocks[self.text[1]]:
             pygame.draw.rect(self.display_surface, (pygame.Color('red')), (57, 30, 30, 30), 3)
         else:
             pygame.draw.rect(self.display_surface, (pygame.Color('black')), (30, 30, 60, 30), 2)
-        if self.texture == self.blocks['L']:
+        if self.texture == self.blocks[self.text[2]]:
             pygame.draw.rect(self.display_surface, (pygame.Color('red')), (87, 30, 30, 30), 3)
         else:
             pygame.draw.rect(self.display_surface, (pygame.Color('black')), (30, 30, 90, 30), 2)
-        if self.texture == self.blocks['B']:
+        if self.texture == self.blocks[self.text[3]]:
             pygame.draw.rect(self.display_surface, (pygame.Color('red')), (117, 30, 30, 30), 3)
         else:
             pygame.draw.rect(self.display_surface, (pygame.Color('black')), (30, 30, 120, 30), 2)
-        if self.texture == self.blocks['S']:
+        if self.texture == self.blocks[self.text[4]]:
             pygame.draw.rect(self.display_surface, (pygame.Color('red')), (147, 30, 30, 30), 3)
         else:
             pygame.draw.rect(self.display_surface, (pygame.Color('black')), (30, 30, 150, 30), 2)
@@ -126,13 +126,16 @@ class Level:
             symbol = 'B'
         elif self.texture == self.blocks['S']:
             symbol = 'S'
-        else:
+        elif self.texture == self.blocks['L']:
             symbol = 'L'
+        else:
+            symbol = 'C'
 
         self.symbol = symbol
 
-        s = pygame.mixer.Sound(self.blocks_sounds[symbol])
-        s.set_volume(0.5)
+        if symbol != 'C':
+            s = pygame.mixer.Sound(self.blocks_sounds[symbol])
+            s.set_volume(0.5)
 
         if player.rect.y >= 660 or player.rect.x <= -60 or player.rect.y < -50:
             self.setup_level(self.level_data)
@@ -147,7 +150,8 @@ class Level:
                     self.level_data[x + 1] = self.level_data[x + 1][: y + 1] + symbol + self.level_data[x + 1][y + 2:]
                     tile = Tile(((y + 1) * tile_size, (x + 1) * tile_size), self.texture)
                     self.tiles.add(tile)
-                    s.play()
+                    if symbol != 'C':
+                        s.play()
 
         elif keystate[pygame.K_x] and not self.k_del:
             y = int(player.rect.x / tile_size)
@@ -158,7 +162,8 @@ class Level:
                     self.level_data[x + 1] = self.level_data[x + 1][: y - 1] + symbol + self.level_data[x + 1][y:]
                     tile = Tile(((y - 1) * tile_size, (x + 1) * tile_size), self.texture)
                     self.tiles.add(tile)
-                    s.play()
+                    if symbol != 'C':
+                        s.play()
 
         elif keystate[pygame.K_e] and not self.k_del:
             y = int(player.rect.x / tile_size)
@@ -169,7 +174,8 @@ class Level:
                     self.level_data[x - 1] = self.level_data[x - 1][: y + 1] + symbol + self.level_data[x - 1][y + 2:]
                     tile = Tile(((y + 1) * tile_size, (x - 1) * tile_size), self.texture)
                     self.tiles.add(tile)
-                    s.play()
+                    if symbol != 'C':
+                        s.play()
 
         elif keystate[pygame.K_q] and not self.k_del:
             y = int(player.rect.x / tile_size)
@@ -180,7 +186,8 @@ class Level:
                     self.level_data[x - 1] = self.level_data[x - 1][: y - 1] + symbol + self.level_data[x - 1][y:]
                     tile = Tile(((y - 1) * tile_size, (x - 1) * tile_size), self.texture)
                     self.tiles.add(tile)
-                    s.play()
+                    if symbol != 'C':
+                        s.play()
 
         elif keystate[pygame.K_r]:
             self.setup_level(self.level_data)
