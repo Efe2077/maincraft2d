@@ -1,0 +1,5 @@
+X: data/grass_tex2.jpg
+W: data/wood.png
+L: data/liafes.png
+B: data/obsidian.png
+S: data/stone.png

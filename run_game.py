@@ -1,5 +1,6 @@
 import pygame
 from play_maincraft import play_game
+from do import do_change, reset_all
 
 
 pygame.init()
@@ -23,6 +24,11 @@ while run:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_6:
+                do_change()
+            elif event.key == pygame.K_7:
+                reset_all()
         if event.type == pygame.MOUSEBUTTONDOWN:
             if 74 <= event.pos[0] <= 198 and 38 <= event.pos[1] <= 159 and maincraft:
                 play_game()

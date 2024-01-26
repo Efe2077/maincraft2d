@@ -1,16 +1,22 @@
 import pygame
 from tile import Tile
-from settings import tile_size, save, symbol_of_blocks
+from settings import tile_size, save, symbol_of_blocks, load_level
 from player import Player
 from random import choice
+from do import get_list_of_blocks, get_dict
 
 
 class Level:
     def __init__(self, level_data, surface, fps):
         self.display_surface = surface
-        self.level_data = level_data
-        self.blocks = {'X': 'data/grass_tex2.jpg', 'W': 'data/wood.png', 'L': 'data/liafes.png',
-                       'B': 'data/obsidian.png', 'S': 'data/stone.png'}
+        self.level_data = load_level('map.txt')
+        self.blocks = get_dict()
+
+        self.icons = {'X': 'data/grass_icon.png',
+                      'W': 'data/wood_icon.png',
+                      'L': 'data/leaf_icon.png',
+                      'B': 'data/obsidian_icon.png',
+                      'S': 'data/stone_icon.png'}
 
         self.blocks_sounds = {'X': f'data/sound/grass/{choice(["grass1.mp3", "grass2.mp3"])}',
                               'W': f'data/sound/wood/{choice(["wood1.mp3", "wood2.mp3"])}',
@@ -26,7 +32,7 @@ class Level:
         self.symbol = 'X'
         self.texture = self.blocks['X']
         self.setup_level(self.level_data)
-        self.text = symbol_of_blocks
+        self.text = get_list_of_blocks()
         self.world_shift = 0
         self.fps = fps
         self.k_del = False
@@ -55,21 +61,19 @@ class Level:
             pygame.draw.rect(self.display_surface, (pygame.Color('red')), (147, 30, 30, 30), 3)
         else:
             pygame.draw.rect(self.display_surface, (pygame.Color('black')), (30, 30, 150, 30), 2)
-        image = pygame.image.load('data/grass_icon.png')
-        rect = image.get_rect(topleft=(35, 35))
-        self.display_surface.blit(image, rect)
-        image = pygame.image.load('data/wood_icon.png')
-        rect = image.get_rect(topleft=(62, 35))
-        self.display_surface.blit(image, rect)
-        image = pygame.image.load('data/leaf_icon.png')
-        rect = image.get_rect(topleft=(92, 35))
-        self.display_surface.blit(image, rect)
-        image = pygame.image.load('data/obsidian_icon.png')
-        rect = image.get_rect(topleft=(122, 35))
-        self.display_surface.blit(image, rect)
-        image = pygame.image.load('data/stone_icon.png')
-        rect = image.get_rect(topleft=(152, 35))
-        self.display_surface.blit(image, rect)
+
+        x = 32
+        y = 35
+
+        for symbol in self.text[0: 5]:
+            if symbol in list(self.icons.keys()):
+                image = pygame.image.load(self.icons[symbol])
+            else:
+                image = pygame.image.load(self.blocks[symbol])
+                image = pygame.transform.scale(image, (20, 20))
+            rect = image.get_rect(topleft=(x, y))
+            self.display_surface.blit(image, rect)
+            x += 30
 
     def setup_level(self, layout):
         self.tiles = pygame.sprite.Group()
@@ -118,24 +122,27 @@ class Level:
         player = self.players.sprite
         keystate = pygame.key.get_pressed()
 
-        if self.texture == self.blocks['X']:
-            symbol = 'X'
-        elif self.texture == self.blocks['W']:
-            symbol = 'W'
-        elif self.texture == self.blocks['B']:
-            symbol = 'B'
-        elif self.texture == self.blocks['S']:
-            symbol = 'S'
-        elif self.texture == self.blocks['L']:
-            symbol = 'L'
+        if self.texture == self.blocks[self.text[0]]:
+            symbol = list(self.blocks.keys())[0]
+        elif self.texture == self.blocks[self.text[1]]:
+            symbol = list(self.blocks.keys())[1]
+        elif self.texture == self.blocks[self.text[2]]:
+            symbol = list(self.blocks.keys())[2]
+        elif self.texture == self.blocks[self.text[3]]:
+            symbol = list(self.blocks.keys())[3]
+        elif self.texture == self.blocks[self.text[4]]:
+            symbol = list(self.blocks.keys())[4]
         else:
-            symbol = 'C'
+            symbol = 'X'
 
         self.symbol = symbol
 
-        if symbol != 'C':
+        play = False
+
+        if symbol in symbol_of_blocks:
             s = pygame.mixer.Sound(self.blocks_sounds[symbol])
             s.set_volume(0.5)
+            play = True
 
         if player.rect.y >= 660 or player.rect.x <= -60 or player.rect.y < -50:
             self.setup_level(self.level_data)
@@ -150,7 +157,7 @@ class Level:
                     self.level_data[x + 1] = self.level_data[x + 1][: y + 1] + symbol + self.level_data[x + 1][y + 2:]
                     tile = Tile(((y + 1) * tile_size, (x + 1) * tile_size), self.texture)
                     self.tiles.add(tile)
-                    if symbol != 'C':
+                    if play:
                         s.play()
 
         elif keystate[pygame.K_x] and not self.k_del:
@@ -162,7 +169,7 @@ class Level:
                     self.level_data[x + 1] = self.level_data[x + 1][: y - 1] + symbol + self.level_data[x + 1][y:]
                     tile = Tile(((y - 1) * tile_size, (x + 1) * tile_size), self.texture)
                     self.tiles.add(tile)
-                    if symbol != 'C':
+                    if play:
                         s.play()
 
         elif keystate[pygame.K_e] and not self.k_del:
@@ -174,7 +181,7 @@ class Level:
                     self.level_data[x - 1] = self.level_data[x - 1][: y + 1] + symbol + self.level_data[x - 1][y + 2:]
                     tile = Tile(((y + 1) * tile_size, (x - 1) * tile_size), self.texture)
                     self.tiles.add(tile)
-                    if symbol != 'C':
+                    if play:
                         s.play()
 
         elif keystate[pygame.K_q] and not self.k_del:
@@ -186,7 +193,7 @@ class Level:
                     self.level_data[x - 1] = self.level_data[x - 1][: y - 1] + symbol + self.level_data[x - 1][y:]
                     tile = Tile(((y - 1) * tile_size, (x - 1) * tile_size), self.texture)
                     self.tiles.add(tile)
-                    if symbol != 'C':
+                    if play:
                         s.play()
 
         elif keystate[pygame.K_r]:

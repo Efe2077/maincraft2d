@@ -11,6 +11,7 @@ class Tile(pygame.sprite.Sprite):
             self.vision = False
         else:
             self.image = pygame.image.load(texture)
+            self.image = pygame.transform.scale(self.image, (40, 40))
             self.vision = vision
             self.rect = self.image.get_rect(topleft=pos)
 
