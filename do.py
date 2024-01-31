@@ -1,6 +1,9 @@
-def do_change():
+def do_change(tex, symbol, number):
 
     blocks = {}
+
+    number -= 1
+    symbol = symbol.upper()
 
     symbols_start = []
 
@@ -14,15 +17,6 @@ def do_change():
 
     for sym in blocks.keys():
         symbols_start.append(sym)
-
-    print('Выберите символ')
-    symbol = input().upper()
-
-    print('Выберите текстуру')
-    tex = input()
-
-    print('Выбери номер (от 1 до 5)')
-    number = int(input()) - 1
 
     symbols = []
 
@@ -112,3 +106,44 @@ def reset_all():
             f.write(line)
             f.write('\n')
 
+
+def return_furst_value():
+    a = []
+    f = open('data/bloks_list_0.txt', 'r', encoding='utf8')
+    text = f.readlines()
+    for i in text:
+        i = i.strip()
+        if i not in a:
+            a.append(i)
+
+    f = open('data/bloks_list.txt', 'r', encoding='utf8')
+    text = f.readlines()
+    for i in text:
+        i = i.strip()
+        if i not in a:
+            a.append(i)
+
+    f = open('data/bloks_list.txt', 'w', encoding='utf8')
+    for i in a:
+        f.write(i)
+        f.write('\n')
+
+    a = []
+    f = open('data/slovar_0.txt', 'r', encoding='utf8')
+    text = f.readlines()
+    for i in text:
+        i = i.strip()
+        if i not in a:
+            a.append(i)
+
+    f = open('data/slovar.txt', 'r', encoding='utf8')
+    text = f.readlines()
+    for i in text:
+        i = i.strip()
+        if i not in a:
+            a.append(i)
+
+    f = open('data/slovar.txt', 'w', encoding='utf8')
+    for i in a:
+        f.write(i)
+        f.write('\n')

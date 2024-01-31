@@ -18,7 +18,7 @@ def play_game():
     pygame.mouse.set_visible(True)
     fps = 60
     count_for_del = 0
-    level = Level(level_map, screen, fps)
+    level = Level(screen, fps)
     running = True
 
     while running:
@@ -53,4 +53,5 @@ def play_game():
             running = False
         pygame.display.update()
         clock.tick(fps)
+        pygame.display.flip()
     pygame.mixer.music.stop()

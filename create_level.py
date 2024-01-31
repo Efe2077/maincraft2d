@@ -7,7 +7,7 @@ from do import get_list_of_blocks, get_dict
 
 
 class Level:
-    def __init__(self, level_data, surface, fps):
+    def __init__(self, surface, fps):
         self.display_surface = surface
         self.level_data = load_level('map.txt')
         self.blocks = get_dict()
@@ -64,15 +64,22 @@ class Level:
 
         x = 32
         y = 35
+        flag = False
 
         for symbol in self.text[0: 5]:
             if symbol in list(self.icons.keys()):
+                if symbol == list(self.icons.keys())[0]:
+                    x = 34
+                    flag = True
                 image = pygame.image.load(self.icons[symbol])
             else:
                 image = pygame.image.load(self.blocks[symbol])
                 image = pygame.transform.scale(image, (20, 20))
             rect = image.get_rect(topleft=(x, y))
             self.display_surface.blit(image, rect)
+            if flag:
+                x -= 2
+                flag = False
             x += 30
 
     def setup_level(self, layout):
